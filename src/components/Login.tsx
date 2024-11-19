@@ -13,8 +13,6 @@ const Login = () => {
     password: "",
   });
 
-  console.log(enteredValues);
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
