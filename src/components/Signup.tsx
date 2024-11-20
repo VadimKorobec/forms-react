@@ -1,4 +1,9 @@
+import { useState } from "react";
+
 const Signup = () => {
+  const [passwordsAreNotEqual, setPasswordsAreNotEqual] =
+    useState<boolean>(false);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -26,6 +31,11 @@ const Signup = () => {
     });
 
     data.acquisition = acquisitionChannel;
+
+    if (data.password !== data["confirm-password"]) {
+      setPasswordsAreNotEqual(true);
+      return;
+    }
 
     console.log(data);
   };

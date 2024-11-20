@@ -1,11 +1,13 @@
 import { useState } from "react";
+import Input from "./Input";
+import { hasMinLength, isEmail, isNotEmpty } from "../util/validation";
 
 interface InputValue {
   email: string;
   password: string;
 }
 
-interface InputBlur {
+export interface InputBlur {
   email: boolean;
   password: boolean;
 }
@@ -16,18 +18,26 @@ const StateLogin = () => {
     password: "",
   });
 
+  console.log(enteredValues);
+
   const [didEdit, setDidEdit] = useState<InputBlur>({
     email: false,
     password: false,
   });
 
-  const emailIsInvalid = didEdit.email && !enteredValues.email.includes("@");
+  const emailIsInvalid =
+    didEdit.email &&
+    !isEmail(enteredValues.email) &&
+    !isNotEmpty(enteredValues.email);
+
+  const passwordIsValid =
+    didEdit.password && !hasMinLength(enteredValues.password, 6);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setEnteredValues((prevState) => ({ ...prevState, [name]: value }));
@@ -46,19 +56,17 @@ const StateLogin = () => {
       <h2>Login</h2>
       <div className="control-row">
         <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input
+          <Input
             id="email"
             type="email"
             name="email"
-            onBlur={() => handleInputBlur("email")}
-            onFocus={() => handleInputFocus("email")}
+            title="Email"
+            onBlur={handleInputBlur}
+            onFocus={handleInputFocus}
+            onChange={handleInputChange}
             value={enteredValues.email}
-            onChange={handleChange}
+            error={emailIsInvalid}
           />
-          <div className="control-error">
-            {emailIsInvalid && <p>Please enter a valid email address.</p>}
-          </div>
         </div>
         <div className="control no-margin">
           <label htmlFor="password">Password</label>
@@ -69,8 +77,11 @@ const StateLogin = () => {
             onBlur={() => handleInputBlur("password")}
             onFocus={() => handleInputFocus("password")}
             value={enteredValues.password}
-            onChange={handleChange}
+            onChange={handleInputChange}
           />
+          <div className="control-error">
+            {passwordIsValid && <p>Please enter a valid email address.</p>}
+          </div>
         </div>
       </div>
       <p className="form-actions">
