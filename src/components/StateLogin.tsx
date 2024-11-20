@@ -1,17 +1,27 @@
 import { useState } from "react";
 
-interface Values {
+interface InputValue {
   email: string;
   password: string;
 }
 
+interface InputBlur {
+  email: boolean;
+  password: boolean;
+}
+
 const StateLogin = () => {
-  // const [enteredEmail, setEnteredEmail] = useState<string>("");
-  // const [enteredPassword, setEnteredPassword] = useState<string>("");
-  const [enteredValues, setEnteredValues] = useState<Values>({
+  const [enteredValues, setEnteredValues] = useState<InputValue>({
     email: "",
     password: "",
   });
+
+  const [didEdit, setDidEdit] = useState<InputBlur>({
+    email: false,
+    password: false,
+  });
+
+  const emailIsInvalid = didEdit.email && !enteredValues.email.includes("@");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,13 +33,13 @@ const StateLogin = () => {
     setEnteredValues((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  // const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setEnteredEmail(e.target.value);
-  // };
+  const handleInputBlur = (field: keyof InputBlur) => {
+    setDidEdit((prevState) => ({ ...prevState, [field]: true }));
+  };
 
-  // const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setEnteredPassword(e.target.value);
-  // };
+  const handleInputFocus = (field: keyof InputBlur) => {
+    setDidEdit((prevState) => ({ ...prevState, [field]: false }));
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -41,9 +51,14 @@ const StateLogin = () => {
             id="email"
             type="email"
             name="email"
+            onBlur={() => handleInputBlur("email")}
+            onFocus={() => handleInputFocus("email")}
             value={enteredValues.email}
             onChange={handleChange}
           />
+          <div className="control-error">
+            {emailIsInvalid && <p>Please enter a valid email address.</p>}
+          </div>
         </div>
         <div className="control no-margin">
           <label htmlFor="password">Password</label>
@@ -51,6 +66,8 @@ const StateLogin = () => {
             id="password"
             type="password"
             name="password"
+            onBlur={() => handleInputBlur("password")}
+            onFocus={() => handleInputFocus("password")}
             value={enteredValues.password}
             onChange={handleChange}
           />

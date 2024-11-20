@@ -15,20 +15,16 @@ const Signup = () => {
     const form = e.target as HTMLFormElement;
     const fd = new FormData(form);
 
-    // Получаем все значения для "acquisition" как массив строк
     const acquisitionChannel = fd.getAll("acquisition") as string[];
 
-    // Создаем объект данных, который будет содержать массив для "acquisition"
     const data: { [key: string]: FormDataEntryValue | string[] } = {};
 
     fd.forEach((value, key) => {
       if (key !== "acquisition") {
-        // Для всех остальных полей сохраняем значение как FormDataEntryValue
         data[key] = value;
       }
     });
 
-    // Добавляем массив для "acquisition"
     data.acquisition = acquisitionChannel;
 
     console.log(data);
@@ -41,7 +37,7 @@ const Signup = () => {
 
       <div className="control">
         <label htmlFor="email">Email</label>
-        <input id="email" type="email" name="email" />
+        <input id="email" type="email" name="email" required />
       </div>
 
       <div className="control-row">
